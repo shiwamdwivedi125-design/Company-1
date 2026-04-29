@@ -1,0 +1,62 @@
+[
+  {
+    "score": 1,
+    "band": "Need Attention",
+    "label": "Not Interested",
+    "description": "Supervisor describes disengagement, no effort"
+  },
+  {
+    "score": 2,
+    "band": "Need Attention",
+    "label": "Lacks Discipline",
+    "description": "'Works only when I tell him', no self-initiative"
+  },
+  {
+    "score": 3,
+    "band": "Need Attention",
+    "label": "Motivated but Directionless",
+    "description": "Enthusiasm + confusion: 'She wants to help but doesn't know where to start'"
+  },
+  {
+    "score": 4,
+    "band": "Productivity",
+    "label": "Careless and Inconsistent",
+    "description": "Output exists but quality varies: 'Sometimes good, sometimes sloppy'"
+  },
+  {
+    "score": 5,
+    "band": "Productivity",
+    "label": "Consistent Performer",
+    "description": "Reliable task execution: 'Does what I ask, meets standards'"
+  },
+  {
+    "score": 6,
+    "band": "Productivity",
+    "label": "Reliable and Productive",
+    "description": "High trust: 'I give him a task and forget about it. It gets done.' (Executes tasks defined by someone else)"
+  },
+  {
+    "score": 7,
+    "band": "Performance",
+    "label": "Problem Identifier",
+    "description": "Spots patterns: 'She noticed our rejection rate goes up on Mondays' (Identifies problems the supervisor hadn't asked about)"
+  },
+  {
+    "score": 8,
+    "band": "Performance",
+    "label": "Problem Solver",
+    "description": "Identifies AND fixes: 'He built a tracking system for dispatch delays'"
+  },
+  {
+    "score": 9,
+    "band": "Performance",
+    "label": "Innovative and Experimental",
+    "description": "Builds new tools/processes, tests approaches, creates MVPs"
+  },
+  {
+    "score": 10,
+    "band": "Performance",
+    "label": "Exceptional Performer",
+    "description": "Everything at 9, flawlessly, and others learn from their work"
+  }
+]

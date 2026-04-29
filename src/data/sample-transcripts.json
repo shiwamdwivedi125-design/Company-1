@@ -1,0 +1,17 @@
+[
+  {
+    "id": "transcript-1",
+    "name": "Transcript 1: Karthik at Veerabhadra Auto Components",
+    "content": "Karthik is a very sincere boy. He's always on the floor, from 9 AM to 6 PM. I give him a task and forget about it. It gets done. For example, I asked him to handle the production tracking. Every evening he updates it and sends it to me on WhatsApp. He also did a cycle time study for the drum brake line and saved us 10 minutes per batch. He doesn't really push back though. If I tell him to do something, he does it. If I don't tell him, he waits for me."
+  },
+  {
+    "id": "transcript-2",
+    "name": "Transcript 2: Meena at Lakshmi Textiles",
+    "content": "Meena spends too much time on her laptop. I told her she needs to be on the floor more. But to be fair, she did build this new order tracker that the dispatch team uses now. We used to miss deadlines a lot, but she noticed that our rejection rate goes up when we rush orders on Mondays. So she set up this dispatch risk alert. When a rush order comes, the system flags it. The older workers don't really listen to her though, and she hasn't figured out how to handle them yet."
+  },
+  {
+    "id": "transcript-3",
+    "name": "Transcript 3: Anil at Prabhat Foods",
+    "content": "Anil is my right hand. I honestly don't know how we managed before him. He handles all my calls now, follows up with vendors, and even does the planning that my production manager used to do. He's basically taking over half my job. He's doing the work of two people. If he ever takes a day off, everything piles up and we are just waiting for him to come back."
+  }
+]
