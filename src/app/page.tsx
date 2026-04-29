@@ -1,66 +1,126 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState, useEffect } from 'react';
+import styles from './page.module.css';
+import TranscriptInput from '@/components/TranscriptInput';
+import AnalysisReport from '@/components/AnalysisReport';
 
 export default function Home() {
+  const [analysisData, setAnalysisData] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const fetchHistory = async () => {
+    try {
+      const res = await fetch('/api/history');
+      const data = await res.json();
+      if (res.ok) setHistory(data);
+    } catch (err) {
+      console.error('Failed to fetch history', err);
+    }
+  };
+
+  const handleAnalyze = async (transcript: string, model: string) => {
+    setIsLoading(true);
+    setError(null);
+    setAnalysisData(null);
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ transcript, model }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      setAnalysisData(data);
+      fetchHistory(); // Refresh history
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadFromHistory = (item: any) => {
+    setAnalysisData(JSON.parse(item.result));
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Supervisor Feedback Analyzer</h1>
+        <p className={styles.subtitle}>Trinethra Module — DeepThought</p>
+      </header>
+
+      <div className={styles.container}>
+        <div className={styles.layout}>
+          <div className={styles.mainContent}>
+            <TranscriptInput onAnalyze={handleAnalyze} isLoading={isLoading} />
+          </div>
+
+          {history.length > 0 && (
+            <aside className={styles.sidebar}>
+              <div className={styles.card}>
+                <h2 className={styles.cardTitle}>Recent History</h2>
+                <div className={styles.historyList}>
+                  {history.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className={styles.historyItem}
+                      onClick={() => loadFromHistory(item)}
+                    >
+                      <div className={styles.historyScore}>{item.score}</div>
+                      <div className={styles.historyMeta}>
+                        <div className={styles.historyLabel}>{item.label}</div>
+                        <div className={styles.historyDate}>
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          )}
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        {isLoading && (
+          <div className={styles.loadingContainer}>
+            <div className={styles.spinner}></div>
+            <p>Analyzing transcript with Ollama... This may take 30-60 seconds.</p>
+          </div>
+        )}
+
+        {error && (
+          <div className={styles.errorContainer}>
+            <h3>Analysis Failed</h3>
+            <p>{error}</p>
+            {error.includes('Failed to fetch') && (
+              <p className={styles.hint}>Tip: Make sure Ollama is running locally (http://localhost:11434)</p>
+            )}
+          </div>
+        )}
+
+        {analysisData && <AnalysisReport data={analysisData} />}
+      </div>
+      
+      <footer className={styles.footer}>
+        <p>&copy; 2026 DeepThought. Built for Software Developer Internship.</p>
+      </footer>
+    </main>
   );
 }
