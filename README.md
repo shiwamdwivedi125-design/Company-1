@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Supervisor Feedback Analyzer — Trinethra Module
 
-## Getting Started
+An AI-assisted tool for DeepThought psychology interns to analyze supervisor feedback transcripts. Built with Next.js and integrated with local Ollama.
 
-First, run the development server:
+## Setup Instructions
 
+### 1. Prerequisites
+- **Node.js**: Install the latest LTS version.
+- **Ollama**: Download and install from [ollama.com](https://ollama.com).
+
+### 2. Pull the LLM Model
+Ensure Ollama is running and pull a model (llama3.2 is recommended for balance of speed and reasoning):
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+ollama pull llama3.2
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Install Dependencies & Setup Database
+Navigate to the project folder and run:
+```bash
+npm install
+npx prisma generate
+npx prisma db push
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run the Application
+Start the development server:
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Architecture Overview
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: Next.js App Router (React) with **CSS Modules**. The UI uses modern glassmorphism and radial gradients for a premium feel.
+- **Backend**: Next.js **Route Handlers** (API).
+- **Database**: **SQLite** managed with **Prisma ORM**. Stores transcript history and AI results locally.
+- **AI Integration**: Communicates with the local **Ollama HTTP API** (`http://localhost:11434/api/generate`).
+- **Context Handling**: Domain knowledge (`context.md`), rubrics (`rubric.json`), and sample transcripts are stored in the `/data` directory and used to prime the LLM.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Design Challenges Tackled
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Challenge 1: One Prompt or Many?
+I chose a **Single Unified Prompt**. For a 10-15 minute transcript, a single well-structured prompt with clear instructions for a JSON structure is optimal for speed. It simplifies coordination and provides the LLM with the full context needed to cross-reference evidence against the rubric in one pass.
 
-## Deploy on Vercel
+### Challenge 2: Structured Output Reliability
+I implemented **Strict JSON Mode** by passing `format: 'json'` to Ollama. Additionally, the backend includes a fallback **regex-based parser** to handle cases where the model might wrap the response in markdown code blocks, ensuring high reliability for the frontend.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Chosen Ollama Model
+**Model: `llama3.2` (3B)**
+Chosen because it is lightweight enough to run on most hardware while possessing strong enough instruction-following capabilities to adhere to the complex rubric requirements and output clean JSON.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Future Improvements
+- **Side-by-Side Review**: Add a split-screen view where the intern can highlight the transcript and see the AI link it to specific evidence in real-time.
+- **Manual Edit History**: Allow the intern to edit the AI's suggestions and save the final "human-verified" version to a database for future model fine-tuning.
+- **Batch Processing**: Allow uploading multiple transcripts at once to generate a summary dashboard for the whole team.
