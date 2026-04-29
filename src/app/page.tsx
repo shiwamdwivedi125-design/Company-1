@@ -86,7 +86,7 @@ export default function Home() {
                       <div className={styles.historyScore}>{item.score}</div>
                       <div className={styles.historyMeta}>
                         <div className={styles.historyLabel}>{item.label}</div>
-                        <div className={styles.historyDate}>
+                        <div className={styles.historyDate} suppressHydrationWarning>
                           {new Date(item.createdAt).toLocaleDateString()}
                         </div>
                       </div>
